@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        h1{
+            line-height: 1.75rem;
+            color: #333;
+            font-weight: 300;
+            padding: 0.4rem 0;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+        body{
+            margin-top: 50px;
+        }
+        #header{
+            text-align: center;
+        }
+        #name,
+        #secondname{
+            width: 200px;
+            height: 35px;
+            border: 1px solid #444146;
+            background-color: white;
+            font-family: sans-serif;
+            color: #535353;
+            font-size: 24px;
+            appearance: none;
+            box-shadow: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+            padding-left: 6px;
+        }
+        #email,
+        #password{
+            width: 406px;
+            height: 35px;
+            border: 1px solid #444146;
+            background-color: white;
+            font-family: sans-serif;
+            color: #535353;
+            font-size: 24px;
+            appearance: none;
+            box-shadow: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+            padding-left: 6px;
+        }
+        #form_main{
+            width: 412px;
+            margin: 0 auto;
+            font: inherit;
+            vertical-align: baseline;
+        }
+        #checkboxes{
+            font: inherit;
+            vertical-align: baseline;
+            color: #535353;
+            font-size: 18px;
+        }
+        #link{
+            color: #2B9AF3;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        #reg{
+            background-color: #2B9AF3;
+            width: 406px;
+            height: 45px;
+            border-radius: 10px;
+            border: 1px;
+            font: inherit;
+            vertical-align: baseline;
+            color: white;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <img id='logo' src="logo.png" width="319" height="122"/>
+    </div>
+    <h1>Зарегестрироваться</h1>
+    <div id="form">
+        <div id="form_main">
+                <input placeholder="Имя" id="name" type="text">
+                <input placeholder="Фамилия" id="secondname" type="text"><br><br>
+                <input placeholder="E-mail" id="email" type="email"><br><br>
+                <input placeholder="Пароль" id="password" type="password"><br><br>
+                <div id="checkboxes">
+                    <input type="checkbox"> Получать новости от CloudBrain.<br>
+                    <input type="checkbox"> Я принимаю <a id="link">Условия использования</a>.
+                </div><br><br>
+                <input id="reg" type="submit" value="ЗАРЕГИСТРИРОВАТЬСЯ">
+        </div>
+    </div>
+</body>
+</html>

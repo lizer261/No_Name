@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <title></title>
     <style>
         body{
@@ -25,12 +26,14 @@
             color: #3F4C56;
             text-align: center;
             font-stretch: ultra-condensed;
+            height: 320px;
+            line-height: 1.75rem;
+            font-weight: 300;
         }
         .menu_item:hover{
             color: black;
             cursor: pointer;
         }
-
         #search{
             width:100%;
             height: 2000px;
@@ -38,34 +41,145 @@
             overflow:hidden;
             position:fixed;
             top:0;
+            display: none;
         }
         #search_box{
-            width: 700px;
-            height: 600px;
+            width: 722px;
+            height: 658px;
             border-radius: 10px;
-            border: 1px solid blue;
+            border: 2px solid #cfcfcf;
             background-color: rgb(0, 0, 0);
+            margin:50px auto;
+        }
+        #button_search{
+            text-align: right;
+            color: #cfcfcf;
+            padding: 10px 10px;
+        }
+        #search_line_in{
+            width: 80%;
+            height: 55px;
+            margin: 0 72px;
+            border: 2px solid #cfcfcf;
+            background-color: black;
+            font-family: sans-serif;
+            color: #cfcfcf;
+            font-size: 24px;
+            appearance: none;
+            box-shadow: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+            padding-left: 10px;
+        }
+        #features{
+            line-height: 1.75rem;
+            font-weight: 300;
+            height: 500px;
+            background-color: rgb(247, 248, 250);
+            color: rgb(63, 76, 86);
+        }
+        #table_features{
+            height: 100%;
+            margin: 0 auto;
+            border-spacing: 0;
+        }
+        #lets_start{
+            padding-top: 2ex;
+            padding-bottom: 2ex;
+            letter-spacing: 0.033ex;
+            font-size: 1.05em;
+            font-weight: 400;
+            text-align: center;
+            background-color: #2B9AF3;
+            color: #FFF;
+        }
+        #button_togo{
+            border: 1px solid white;
+            border-radius: 10px;
+            display: inline-block;
+            vertical-align: middle;
+            padding: 0.5ex 0.75rem;
+            margin: 0 0.35rem;
+            letter-spacing: 0.067ex;
+        }
+        #button_togo:hover{
+            border: 1px;
+            background-color: white;
+            color: #2B9AF3;
+            cursor: pointer;
+        }
+        #nojs{
+            width:100%;
+            height: 2000px;
+            background-color: rgba(0,0,0,0.5);
+            overflow:hidden;
+            position:fixed;
+            top:0;
+            color: red;
+            font-size: 50px;
         }
     </style>
 </head>
 <body>
     <div id="menu">
         <a class="menu_item"><i class="fa fa-home"></i>Меню</a>&nbsp;&nbsp;
-        <a class="menu_item"><i class="fa fa-search"></i>Поиск</a>&nbsp;&nbsp;
-        <a class="menu_item"><i class="fa fa-sign-in"></i>Логин</a>&nbsp;&nbsp;
+        <a class="menu_item" onclick="$('#search').slideToggle(1400);"><i class="fa fa-search"></i>Поиск</a>&nbsp;&nbsp;
+        <a class="menu_item"  onclick="window.location='register.html'"><i class="fa fa-sign-in"></i>Регистрация</a>&nbsp;&nbsp;
         <a class="menu_item"><img width="17" height="17" src="head.png">Войти</a>
     </div>
+
     <img id='logo' src="logo.png" width="319" height="122"/>
+
     <div id="main_thing">
         <h1>Начни погружать свой мозг в облако.</h1>
         <h4>С нашей помощью вы можете хранить даже самые мимолётные ощущения на много лет.</h4>
         <img src="google.png">
         <img style="padding-left: 100px; padding-top: 50px" src="apple.png">
     </div>
+
+    <div id="features">
+        <table id="table_features" width="90%">
+            <tbody>
+                    <tr>
+                        <td style="text-align: center;"><i class="fa fa-sticky-note-o fa-5x"></i><h3>Возможность записывать все свои мысли.</h3></td>
+                        <td style="text-align: center;"><i class="fa fa-simplybuilt fa-5x"></i><h3>Очень прост в использовании.</h3></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;"><i class="fa fa-file-archive-o fa-5x"></i><br><h3>Возможноть прикрепить файл любого типа.</h3></td><br/><br/>
+                        <td style="text-align: center;"><i class="fa fa-cloud-upload fa-5x"></i><br><h3>Хранение файлов до 10gb.</h3></td>
+                    </tr>
+                </tbody>
+        </table>
+    </div>
+    <div id="lets_start">
+        <i class="fa fa-play fa-1x"></i>
+        Начни использовать ресурс сейчас.
+        <a id="button_togo" onclick="window.location='register.html'">Регистрация</a>
+    </div>
     <div id="search">
         <div id="search_box">
-
+            <div id="button_search">
+                <button style="background: black; border: 0;cursor: pointer;" onclick="$('#search').slideToggle(1400);">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 32 32">
+                        <style>*
+                            {fill:#999999}[fill="none"],
+                            [fill="none"] * { fill: none !important;}
+                            [stroke] { stroke: #999999!important;  }
+                            :hover{
+                                fill: white;
+                            }
+                        </style>
+                        <path d="M31.158 32.118c-.246 0-.492-.093-.678-.282L.163 1.52c-.375-.375-.375-.983 0-1.358s.983-.375 1.358 0l30.317 30.316c.375.375.375.983 0 1.358-.187.188-.433.282-.678.282zM.842 32.118c-.246 0-.492-.093-.678-.282-.375-.375-.375-.983 0-1.358L30.48.162c.375-.375.983-.375 1.358 0s.375.983 0 1.358L1.52 31.836c-.186.188-.432.282-.677.282z" fill="#fff"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="search_line">
+                <input id="search_line_in" placeholder="Поиск" type="text">
+            </div>
         </div>
     </div>
+<noscript>
+    <div id="nojs"><a style="padding: 0 auto;">Включите, пожалуйста, javascript.</a></div>
+</noscript>
 </body>
 </html>
