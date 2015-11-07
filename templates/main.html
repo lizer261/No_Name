@@ -10,10 +10,13 @@
 
     <div id="input" style="display: none">
         <form action="/write" method="post">
-            <input type="text" name="yourname" /><br />
+            <input type="text" name="theme" /><br />
             <input type="submit">
         </form>
     </div>
-
+    <br /><br />
+    {% for i in theme %}
+        <a onclick="window.location='/my/{{ i[0] }}'"> {{ i[0] }} </a><br/><br />
+    {% endfor %}
 </body>
 </html>

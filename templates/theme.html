@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+    <div id="input">
+        <form method="post">
+            <textarea rows="10" cols="45" name="note"></textarea><br />
+            <input type="submit">
+        </form>
+    </div>
+    <br /><br />
+    {% for i in notes %}
+        {{ i[3] }} <a onclick='$("#{{ i[0] }}").toggle();'>+</a><a>-</a>
+        <div style="display: none" id="{{ i[0] }}">
+            <form method="post">
+                <textarea rows="10" cols="45" name="note"></textarea><br />
+                <input type="hidden" value="{{ i[0] }}" name="id">
+                <input type="submit">
+            </form>
+        </div>
+        <br/><br />
+    {% endfor %}
+</body>
+</html>

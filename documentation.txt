@@ -1,0 +1,3 @@
+records (hex varchar(255), record varchar(65000), document varchar(255), theme varchar(255));
+depending (first varchar(255), second varchar(255), theme varchar(255));
+theme (theme varchar(255));
