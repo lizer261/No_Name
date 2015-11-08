@@ -59,12 +59,13 @@
             font: inherit;
             vertical-align: baseline;
             color: #535353;
-            font-size: 18px;
+            font-size: 15px;
         }
         #link{
             color: #2B9AF3;
             cursor: pointer;
             text-decoration: underline;
+            padding-left: 60px;
         }
         #reg{
             background-color: #2B9AF3;
@@ -83,18 +84,16 @@
     <div id="header">
         <img id='logo' src="logo.png" width="319" height="122"/>
     </div>
-    <h1>Зарегистрироваться</h1>
+    <h1>Вход</h1>
     <div id="form">
         <div id="form_main">
-                <input placeholder="Имя" id="name" type="text">
-                <input placeholder="Фамилия" id="secondname" type="text"><br><br>
                 <input placeholder="E-mail" id="email" type="email"><br><br>
                 <input placeholder="Пароль" id="password" type="password"><br><br>
                 <div id="checkboxes">
-                    <input type="checkbox"> Получать новости от CloudBrain.<br>
-                    <input type="checkbox"> Я принимаю <a id="link">Условия использования</a>.
+                    <input type="checkbox"> Оставаться в системе.
+                    <a id="link">Я забыл пароль.</a>
                 </div><br><br>
-                <input id="reg" type="submit" value="ЗАРЕГИСТРИРОВАТЬСЯ">
+                <input id="reg" type="submit" value="ВОЙТИ">
         </div>
     </div>
 </body>
