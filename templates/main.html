@@ -2,21 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Main</title>
-    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <title></title>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+     <style>
+         body{
+             color: rgb(47,100,85);
+             face="Trebuchet MS"
+         }
+        #tree{
+            width: 88%;
+            height: 100%;
+            float: left;
+        }
+        #themes{
+            margin-left: 50px;
+            border-bottom: 1px solid gray;
+            border-top: 1px solid gray;
+            text-align: center;
+        }
+        h2{
+            margin-left: 55px;
+        }
+        h3{
+            margin-left: 95px;
+        }
+        h1,h2,h3{
+            cursor: pointer;
+            display:inline;
+        }
+        #add{
+            display:inline;
+        }
+        #info{
+             text-align: center;
+         }
+     </style>
 </head>
 <body>
-<a onclick="$('#input').toggle()">+</a>
+    <div id="tree">
+        <div style="text-align: left; font-size: 35px">Карточки</div><br><br>
+        <div id="themes" style="text-align: center">
+            <br><h1><i class="fa fa-plus fa-lg"></i></h1><br><br>
+        </div><br><br>
+        {% for i in notes %}
+            <div id="themes">
+                <h1>{{ i[3] }} <a onclick='$("#{{ i[0] }}").toggle();'>+</a><a>-</a></h1>
+                <br/><br />
+            </div>
+        {% endfor %}
+{#        <div id="themes">#}
+{#            <br><h1>MASTERCARD</h1><br><br>#}
+{#            <br><h2>1 карточка </h2><br>#}
+{#            <br><h2>2 карточка </h2><br>#}
+{#            <br><h2>3 карточка </h2><br>#}
+{#            <br><h2>4 карточка </h2><br>#}
+{#            <br><h2>5 карточка </h2><br><br>#}
+{#        </div><br><br>#}
+{#        <div id="themes">#}
+{#            <br><h1>VISA</h1><br><br>#}
+{#            <br><h2>1 карточка </h2><br>#}
+{#            <br><h2>2 карточка </h2><br>#}
+{#            <br><h2>3 карточка </h2><br>#}
+{#            <br><h2>4 карточка </h2><br>#}
+{#            <br><h2>5 карточка </h2><br><br>#}
+{#        </div><br><br>#}
 
-    <div id="input" style="display: none">
-        <form action="/write" method="post">
-            <input type="text" name="theme" /><br />
-            <input type="submit">
-        </form>
     </div>
-    <br /><br />
-    {% for i in theme %}
-        <a onclick="window.location='/my/{{ i[0] }}'"> {{ i[0] }} </a><br/><br />
-    {% endfor %}
 </body>
 </html>
