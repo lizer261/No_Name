@@ -5,42 +5,189 @@
     <title></title>
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./minified/themes/default.min.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="./minified/themes/default.min.css" type="text/css" media="all"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="./minified/jquery.sceditor.bbcode.min.js"></script>
     <script>
-    $(function() {
-    	$("textarea").sceditor({
-    		plugins: "bbcode",
-    		style: "minified/jquery.sceditor.default.min.css"
-    	});
-    });
+        String.prototype.replaceAll = function (token, newToken, ignoreCase) {
+            var _token;
+            var str = this + "";
+            var i = -1;
+
+            if (typeof token === "string") {
+
+                if (ignoreCase) {
+
+                    _token = token.toLowerCase();
+
+                    while ((
+                            i = str.toLowerCase().indexOf(
+                                    token, i >= 0 ? i + newToken.length : 0
+                            ) ) !== -1
+                            ) {
+                        str = str.substring(0, i) +
+                                newToken +
+                                str.substring(i + token.length);
+                    }
+
+                } else {
+                    return this.split(token).join(newToken);
+                }
+
+            }
+            return str;
+        };
+        $(function () {
+            $("textarea").sceditor({
+                plugins: "bbcode, myplugin",
+                style: "static/minified/jquery.sceditor.default.min.css",
+                locale: "ru",
+                toolbar: "bold,italic,underline,bulletlist,orderedlist,left,center,right,justify,font,size,color,maximize"
+
+            });
+        });
+
+        $.sceditor.plugins.myplugin = function () {
+            var base = this;
+            var once = false;
+            base.signalKeydownEvent = function (e) {
+                if (once == false) {
+                    once = true;
+                    $.post("http://localhost/my/%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%87%D0%BA%D0%B8",
+                            {
+                                theme: $('#theme').val()
+                            },
+                            function (data, status) {
+                            });
+                }
+            };
+        };
+        $(document).ready(function () {
+            var canvas = document.getElementById('can');
+            var context = canvas.getContext("2d");
+            var fakecanvas = document.getElementById('fake');
+            var fakecontext = fakecanvas.getContext("2d");
+            fakecanvas.width+=20;
+            fakecanvas.height+=20;
+            context.translate(canvas.width/2,canvas.height/2);
+            var draw;
+            function mouse_down(e) {
+                var h=e.pageX - Number($('#can').css('left').replace('px', ''));
+                var w=e.pageY - Number($('#can').css('top').replace('px', ''));
+                context.beginPath();
+                context.moveTo(h,w);
+                context.lineTo(h+1,w+1);
+                context.stroke();
+                draw=true;
+            }
+            $('.sceditor-toolbar').append('<br><br><br><input id="theme" placeholder="Название темы" type=text>');
+            $('#can').css('z-index', '10');
+            var iframepos = $("iframe").position();
+
+            $('iframe').contents().find('html').on('mouseup', function (e) {
+            });
+
+            $('#can').on('mouseup', function (e) {
+                draw=false;
+            });
+
+            $('iframe').contents().find('html').on('mousedown', function (e) {
+                $('#can').css('z-index', '10');
+                $('#can').css('left', e.pageX + 5 - 25);
+                $('#can').css('top', e.pageY + 105 - 25);
+                context.translate(canvas.width/2,canvas.height/2);
+            });
+
+            $('#can').on('mousedown', function (e) {
+                mouse_down(e);
+            });
+            $('iframe').contents().find('html').on('mousemove', function (e) {
+            });
+
+            $('#can').on('mousemove', function (e) {
+                if (e.pageY - Number($('#can').css('top').replace('px', '')) - Number($('#can').css('height').replace('px', '')) > -20) {
+                    fakecontext.drawImage(canvas, 0, 0);
+                    $('#can').css('height', Number($('#can').css('height').replace('px', '')) + 20);
+                    canvas.height+=20;
+                    context.drawImage(fakecanvas, 0, 0);
+                    fakecanvas.height+=20;
+                }
+                if (e.pageX - Number($('#can').css('left').replace('px', '')) - Number($('#can').css('width').replace('px', '')) > -20) {
+                    fakecontext.drawImage(canvas, 0, 0);
+                    $('#can').css('width', Number($('#can').css('width').replace('px', '')) + 20);
+                    canvas.width+=20;
+                    context.drawImage(fakecanvas, 0, 0);
+                    fakecanvas.width+=20;
+                }
+                if (e.pageX - Number($('#can').css('left').replace('px', '')) < 20) {
+                    fakecontext.drawImage(canvas, 0, 0);
+                    $('#can').css('left', Number($('#can').css('left').replace('px', '')) - 20);
+                    $('#can').css('width', Number($('#can').css('width').replace('px', '')) + 20);
+                    canvas.width+=20;
+                    context.translate(+20,+0);
+                    context.drawImage(fakecanvas, 0, 0);
+                    fakecanvas.width+=20;
+                }
+                if (e.pageY - Number($('#can').css('top').replace('px', '')) < 20) {
+                    fakecontext.drawImage(canvas, 0, 0);
+                    $('#can').css('top', Number($('#can').css('top').replace('px', '')) - 20);
+                    $('#can').css('height', Number($('#can').css('height').replace('px', '')) + 20);
+                    canvas.height+=20;
+                    context.translate(+0,+20);
+                    context.drawImage(fakecanvas, 0, 0);
+                    fakecanvas.height+=20;
+                }
+                if (draw) {
+                    var h=e.pageX - Number($('#can').css('left').replace('px', ''));
+                    var w=e.pageY - Number($('#can').css('top').replace('px', ''));
+                    context.lineTo(h+1,w+1);
+                    context.stroke();
+                }
+            });
+            $('html').bind('keypress', function(e)
+            {
+                 if(e.keyCode == 13)
+                 {
+                     var dataURL = canvas.toDataURL();
+                     console.log(dataURL);
+                     $('textarea').sceditor('instance').insert('[img]'+dataURL+'[/img]');
+                     $('#can').css('display','none');
+                     $('iframe').contents().find('img').attr('src',$('iframe').contents().find('src').replaceAll(
+                             'http://localhost:63342/No_Name/static/'
+                     ));
+                 }
+            });
+        });
     </script>
     <style>
         html, body {
             height: 100%;
             margin: 0;
         }
-        #other_text{
+
+        #other_text {
             width: 100%;
             height: 100%;
             max-width: 100%;
             max-height: 100%;
         }
-        .sceditor-group{
+
+        .sceditor-group {
             margin: 0 !important;
             padding: 0 !important;
             border-radius: 0 !important;
-            background-color: #F7F7F7 !important;
+            background-color: white !important;
             border: 0 !important;
         }
-        .sceditor-toolbar{
+
+        .sceditor-toolbar {
             text-align: center !important;
             line-height: normal !important;
             border-bottom: 0 !important;
             background: white !important;
         }
-        #theme{
+
+        #theme {
             width: 406px;
             height: 35px;
             border: 1px solid #444146;
@@ -57,11 +204,9 @@
     </style>
 </head>
 <body>
-<script>
-    $( document ).ready(function() {
-        $('.sceditor-toolbar').append('<br><br><br><input id="theme" placeholder="Название темы" type=text>');
-    });
-</script>
-    <textarea id="other_text"></textarea>
+<canvas id="fake"  style="display: none; position:absolute; z-index: 10; top:50px; width: 50px; height: 50px; max-width: 100%; max-height: 100%;"></canvas>
+<canvas id="can"
+        style="position:absolute;" width="50" height="50"></canvas>
+<textarea id="other_text"></textarea>
 </body>
 </html>
