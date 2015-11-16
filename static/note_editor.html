@@ -45,7 +45,7 @@
                 plugins: "bbcode, myplugin",
                 style: "static/minified/jquery.sceditor.default.min.css",
                 locale: "ru",
-                toolbar: "bold,italic,underline,bulletlist,orderedlist,left,center,right,justify,size"
+                toolbar: "bold,italic,underline,bulletlist,orderedlist|left,center,right,justify,size"
 
             });
         });
@@ -76,6 +76,7 @@
             $('#can').css('z-index', '-1');
             canvas.width = 100;
             canvas.height = 100;
+            var draw = false;
         }
         //on creating elements:
         $(document).ready(function () {
@@ -104,7 +105,7 @@
                 context.moveTo(h, w);
             }
             //add custom field theme in
-            $('.sceditor-toolbar').append('<br><br><br><input id="theme" placeholder="Название темы" type=text>');
+            $('.sceditor-toolbar').append('<br><input id="theme" placeholder="Название темы" type=text>');
             //hide canvas
             $('#can').css('z-index', '-1');
             //get iframe
@@ -131,15 +132,13 @@
             });
             //drawing=true
             $('iframe').contents().find('html').on('mousedown', function (e) {
-                //THIS IS CONTEXT MENU
-                if (!$(e.target).parents(".custom-menu").length > 0) {
-                        $(".custom-menu").hide(100);
-                    }
                 //THIS IS DRAWING
                 $('#can').css('left', e.pageX + 5 - 25);
                 $('#can').css('top', e.pageY + 105 - 25);
                 context.translate(canvas.width / 2, canvas.height / 2);
                 mouse_down(e);
+                //hide menu
+                $('#menu').hide(30);
             });
             //stop drawing
             $('#can').on('mouseup', function (e) {
@@ -149,6 +148,7 @@
             //drawing=true
             $('#can').on('mousedown', function (e) {
                 mouse_down(e);
+
             });
             //drawing if mouse pressed
             //expand drawing area
@@ -212,7 +212,7 @@
             $('html').bind('keypress', function (e) {
                 if (e.keyCode == 13) {
                     var dataURL = canvas.toDataURL();
-                    $('textarea').sceditor('instance').insert('[br][img]' + dataURL + '[/img]');
+                    $('textarea').sceditor('instance').insert('[img]' + dataURL + '[/img]');
                     start();
                     $('iframe').contents().find('img').attr('src', $('iframe').contents().find('src').replaceAll(
                             'http://localhost:63342/No_Name/static/'
@@ -242,59 +242,49 @@
                     start();
                 }
             });
+            $('iframe').contents().bind("contextmenu", function (event) {
+            // Avoid the real one
+            event.preventDefault();
+
+            // Show contextmenu
+            start();
+            // In the right position (the mouse)
+            $("#menu").css('display','block');
+            $("#menu").css('top', event.pageY);
+            $("#menu").css('left', event.pageX);
         });
-        $('iframe').contents().find('html').bind("contextmenu", function (event) {
+            $(document).contents().bind("contextmenu", function (event) {
+            // Avoid the real one
+            event.preventDefault();
+            start();
+            // Show contextmenu
+            $("#menu").css('display','block');
+            $("#menu").css('top', event.pageY);
+            $("#menu").css('left', event.pageX);
+        });
+            $('.sceditor-group').appendTo('#menu_in');
+            $('<br><br>').insertAfter('.sceditor-group:eq(0)');
+            $('#menu').on('mousedown',function(e){$(this).hide(30)})
 
-    // Avoid the real one
-    event.preventDefault();
-
-    // Show contextmenu
-    $(".custom-menu").finish().toggle(100).
-
-    // In the right position (the mouse)
-    css({
-        top: event.pageY + "px",
-        left: event.pageX + "px"
-    });
-});
-        // If the document is clicked somewhere
-        // If the menu element is clicked
-        $(".custom-menu li").click(function(){
-
-            // This is the triggered action name
-            switch($(this).attr("data-action")) {
-
-                // A case for each action. Your actions here
-                case "first": alert("first"); break;
-                case "second": alert("second"); break;
-                case "third": alert("third"); break;
-            }
-
-            // Hide it AFTER the action was triggered
-            $(".custom-menu").hide(100);
-          });
+        });
     </script>
     <style>
-        .custom-menu {
-            display: none;
-            z-index: 1000;
+        #menu_in{
+            padding-left: 10px;
+            padding-top: 10px;
+        }
+        #menu {
             position: absolute;
-            overflow: hidden;
-            border: 1px solid #CCC;
-            white-space: nowrap;
-            font-family: sans-serif;
-            background: #FFF;
-            color: #333;
-            border-radius: 5px;
-            padding: 0;
-        }
-        .custom-menu li {
-            padding: 8px 12px;
-            cursor: pointer;
-            list-style-type: none;
-        }
-        .custom-menu li:hover {
-            background-color: #DEF;
+            z-index: 1000;
+            top:0;
+            left:0;
+            width: 150px;
+            height: 90px;
+            text-align: center;
+            display: none;
+            border: 1px solid;
+            border-radius: 20px;
+            background-color: white;
         }
         html, body {
             height: 100%;
@@ -337,14 +327,17 @@
 </head>
 
 <body>
+<!--fake canvas-->
 <canvas id="fake"
         style="display: none; position:absolute; z-index: 10; top:50px; width: 50px; height: 50px; max-width: 100%; max-height: 100%;"></canvas>
+<!--normal canvas-->
 <canvas id="can" style="position:absolute;" width="100" height="100"></canvas>
+<!--textarea sceditor-->
 <textarea id="other_text"></textarea>
-<ul class='custom-menu'>
-  <li data-action="first">First thing</li>
-  <li data-action="second">Second thing</li>
-  <li data-action="third">Third thing</li>
-</ul>
+<div id="menu">
+    <div id="menu_in">
+
+    </div>
+</div>
 </body>
 </html>
