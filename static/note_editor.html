@@ -9,7 +9,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="./minified/jquery.sceditor.bbcode.min.js"></script>
     <script>
+        //color of drawing thing
         var color = 'black';
+        //add custom plugins in sceditor
         String.prototype.replaceAll = function (token, newToken, ignoreCase) {
             var _token;
             var str = this + "";
@@ -47,6 +49,7 @@
 
             });
         });
+        //plugin to post data theme when typing
         $.sceditor.plugins.myplugin = function () {
             var base = this;
             var once = false;
@@ -62,6 +65,7 @@
                 }
             };
         };
+        //nulled canvas for new drawing
         function start() {
             var canvas = document.getElementById('can');
             var context = canvas.getContext("2d");
@@ -73,15 +77,21 @@
             canvas.width = 100;
             canvas.height = 100;
         }
+        //on creating elements:
         $(document).ready(function () {
+            //2 canvas for saving data in one
             var canvas = document.getElementById('can');
             var context = canvas.getContext("2d");
             var fakecanvas = document.getElementById('fake');
             var fakecontext = fakecanvas.getContext("2d");
+            //make one of them bigger for good working whith save
             fakecanvas.width += 20;
             fakecanvas.height += 20;
+            //make 0 0 in center
             context.translate(canvas.width / 2, canvas.height / 2);
+            //draw var for check click
             var draw;
+            //function for start to draw
             function mouse_down(e) {
                 var h = e.pageX - Number($('#can').css('left').replace('px', ''));
                 var w = e.pageY - Number($('#can').css('top').replace('px', ''));
@@ -93,26 +103,18 @@
                 context.shadowColor = 'rgb(0, 0, 0)';
                 context.moveTo(h, w);
             }
+            //add custom field theme in
             $('.sceditor-toolbar').append('<br><br><br><input id="theme" placeholder="Название темы" type=text>');
+            //hide canvas
             $('#can').css('z-index', '-1');
+            //get iframe
             var iframepos = $("iframe").position();
+            //stop drawing
             $('iframe').contents().find('html').on('mouseup', function (e) {
                 draw = false;
                 context.stroke();
             });
-            $('#can').on('mouseup', function (e) {
-                draw = false;
-                context.stroke();
-            });
-            $('iframe').contents().find('html').on('mousedown', function (e) {
-                $('#can').css('left', e.pageX + 5 - 25);
-                $('#can').css('top', e.pageY + 105 - 25);
-                context.translate(canvas.width / 2, canvas.height / 2);
-                mouse_down(e);
-            });
-            $('#can').on('mousedown', function (e) {
-                mouse_down(e);
-            });
+            //drawing if mouse pressed
             $('iframe').contents().find('html').on('mousemove', function (e) {
                 if (draw) {
                     $('#can').css('z-index', '10');
@@ -127,20 +129,29 @@
                     context.stroke();
                 }
             });
-            function x() {
-                fakecontext.drawImage(canvas, 0, 0);
-                $('#can').css('height', Number($('#can').css('height').replace('px', '')) + 20);
-                canvas.height += 20;
-                context.drawImage(fakecanvas, 0, 0);
-                fakecanvas.height += 20;
-            }
-            function y() {
-                fakecontext.drawImage(canvas, 0, 0);
-                $('#can').css('width', Number($('#can').css('width').replace('px', '')) + 20);
-                canvas.width += 20;
-                context.drawImage(fakecanvas, 0, 0);
-                fakecanvas.width += 20;
-            }
+            //drawing=true
+            $('iframe').contents().find('html').on('mousedown', function (e) {
+                //THIS IS CONTEXT MENU
+                if (!$(e.target).parents(".custom-menu").length > 0) {
+                        $(".custom-menu").hide(100);
+                    }
+                //THIS IS DRAWING
+                $('#can').css('left', e.pageX + 5 - 25);
+                $('#can').css('top', e.pageY + 105 - 25);
+                context.translate(canvas.width / 2, canvas.height / 2);
+                mouse_down(e);
+            });
+            //stop drawing
+            $('#can').on('mouseup', function (e) {
+                draw = false;
+                context.stroke();
+            });
+            //drawing=true
+            $('#can').on('mousedown', function (e) {
+                mouse_down(e);
+            });
+            //drawing if mouse pressed
+            //expand drawing area
             $('#can').on('mousemove', function (e) {
                 if (e.pageY - Number($('#can').css('top').replace('px', '')) - Number($('#can').css('height').replace('px', '')) > -20) {
                     x();
@@ -181,6 +192,23 @@
                     context.stroke();
                 }
             });
+            //for good work you need expand both (up an righth)
+            function x() {
+                fakecontext.drawImage(canvas, 0, 0);
+                $('#can').css('height', Number($('#can').css('height').replace('px', '')) + 20);
+                canvas.height += 20;
+                context.drawImage(fakecanvas, 0, 0);
+                fakecanvas.height += 20;
+            }
+            function y() {
+                fakecontext.drawImage(canvas, 0, 0);
+                $('#can').css('width', Number($('#can').css('width').replace('px', '')) + 20);
+                canvas.width += 20;
+                context.drawImage(fakecanvas, 0, 0);
+                fakecanvas.width += 20;
+            }
+            //if enter - post img
+            //if 12345 -- color
             $('html').bind('keypress', function (e) {
                 if (e.keyCode == 13) {
                     var dataURL = canvas.toDataURL();
@@ -215,7 +243,7 @@
                 }
             });
         });
-        $('iframe').contents().bind("contextmenu", function (event) {
+        $('iframe').contents().find('html').bind("contextmenu", function (event) {
 
     // Avoid the real one
     event.preventDefault();
@@ -230,15 +258,6 @@
     });
 });
         // If the document is clicked somewhere
-        $('iframe').contents().bind("mousedown", function (e) {
-
-            // If the clicked element is not the menu
-            if (!$(e.target).parents(".custom-menu").length > 0) {
-
-                // Hide it
-                $(".custom-menu").hide(100);
-            }
-        });
         // If the menu element is clicked
         $(".custom-menu li").click(function(){
 
