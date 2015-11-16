@@ -48,6 +48,7 @@
             float: left;
             width: 60%;
             height: 100%;
+            right: 30px;
         }
         #note_add{
             background-color: white;
@@ -112,9 +113,11 @@
             bottom:0;
         }
         #tree{
-            width: 60%;
+            width:40%;
             height: 100%;
             float: left;
+            position: absolute;
+            margin-left: 50px;
         }
         #themes{
             margin-left: 50px;
@@ -150,6 +153,7 @@
                 <i style="padding-left: 10px; padding-top: 10px;" class="fa fa-folder fa-3x"></i>
             </div>
             <div id="tree">
+                <iframe src="tree_first_level.html" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
             <!--    <div style="text-align: left; font-size: 35px">MAESTRO</div><br><br>
                 <div id="themes" style="text-align: center">
                     <br><h1><i class="fa fa-plus fa-lg"></i></h1><br><br>
@@ -167,7 +171,7 @@
             </div>
     </div>
     <div id="other">
-        <textarea id="other_text"></textarea>
+        <iframe src="note_editor.html" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
     </div>
 </body>
 </html>

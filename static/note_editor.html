@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="./minified/jquery.sceditor.bbcode.min.js"></script>
     <script>
+        var color = 'black';
         String.prototype.replaceAll = function (token, newToken, ignoreCase) {
             var _token;
             var str = this + "";
@@ -42,11 +43,10 @@
                 plugins: "bbcode, myplugin",
                 style: "static/minified/jquery.sceditor.default.min.css",
                 locale: "ru",
-                toolbar: "bold,italic,underline,bulletlist,orderedlist,left,center,right,justify,font,size,color,maximize"
+                toolbar: "bold,italic,underline,bulletlist,orderedlist,left,center,right,justify,size"
 
             });
         });
-
         $.sceditor.plugins.myplugin = function () {
             var base = this;
             var once = false;
@@ -62,116 +62,231 @@
                 }
             };
         };
+        function start() {
+            var canvas = document.getElementById('can');
+            var context = canvas.getContext("2d");
+            $('#can').css('width', '100');
+            $('#can').css('height', '100');
+            $('#can').css('top', '0');
+            $('#can').css('left', '0');
+            $('#can').css('z-index', '-1');
+            canvas.width = 100;
+            canvas.height = 100;
+        }
         $(document).ready(function () {
             var canvas = document.getElementById('can');
             var context = canvas.getContext("2d");
             var fakecanvas = document.getElementById('fake');
             var fakecontext = fakecanvas.getContext("2d");
-            fakecanvas.width+=20;
-            fakecanvas.height+=20;
-            context.translate(canvas.width/2,canvas.height/2);
+            fakecanvas.width += 20;
+            fakecanvas.height += 20;
+            context.translate(canvas.width / 2, canvas.height / 2);
             var draw;
             function mouse_down(e) {
-                var h=e.pageX - Number($('#can').css('left').replace('px', ''));
-                var w=e.pageY - Number($('#can').css('top').replace('px', ''));
+                var h = e.pageX - Number($('#can').css('left').replace('px', ''));
+                var w = e.pageY - Number($('#can').css('top').replace('px', ''));
+                draw = true;
                 context.beginPath();
-                context.moveTo(h,w);
-                context.lineTo(h+1,w+1);
-                context.stroke();
-                draw=true;
+                context.lineWidth = 5;
+                context.lineJoin = context.lineCap = 'round';
+                context.shadowBlur = 5;
+                context.shadowColor = 'rgb(0, 0, 0)';
+                context.moveTo(h, w);
             }
             $('.sceditor-toolbar').append('<br><br><br><input id="theme" placeholder="Название темы" type=text>');
-            $('#can').css('z-index', '10');
+            $('#can').css('z-index', '-1');
             var iframepos = $("iframe").position();
-
             $('iframe').contents().find('html').on('mouseup', function (e) {
+                draw = false;
+                context.stroke();
             });
-
             $('#can').on('mouseup', function (e) {
-                draw=false;
+                draw = false;
+                context.stroke();
             });
-
             $('iframe').contents().find('html').on('mousedown', function (e) {
-                $('#can').css('z-index', '10');
                 $('#can').css('left', e.pageX + 5 - 25);
                 $('#can').css('top', e.pageY + 105 - 25);
-                context.translate(canvas.width/2,canvas.height/2);
+                context.translate(canvas.width / 2, canvas.height / 2);
+                mouse_down(e);
             });
-
             $('#can').on('mousedown', function (e) {
                 mouse_down(e);
             });
             $('iframe').contents().find('html').on('mousemove', function (e) {
+                if (draw) {
+                    $('#can').css('z-index', '10');
+                    var h = e.pageX - Number($('#can').css('left').replace('px', ''));
+                    var w = e.pageY - Number($('#can').css('top').replace('px', ''));
+                    context.lineWidth = 5;
+                    context.lineJoin = context.lineCap = 'round';
+                    context.shadowBlur = 5;
+                    context.shadowColor = color;
+                    context.lineTo(h, w);
+                    context.strokeStyle = color;
+                    context.stroke();
+                }
             });
-
+            function x() {
+                fakecontext.drawImage(canvas, 0, 0);
+                $('#can').css('height', Number($('#can').css('height').replace('px', '')) + 20);
+                canvas.height += 20;
+                context.drawImage(fakecanvas, 0, 0);
+                fakecanvas.height += 20;
+            }
+            function y() {
+                fakecontext.drawImage(canvas, 0, 0);
+                $('#can').css('width', Number($('#can').css('width').replace('px', '')) + 20);
+                canvas.width += 20;
+                context.drawImage(fakecanvas, 0, 0);
+                fakecanvas.width += 20;
+            }
             $('#can').on('mousemove', function (e) {
                 if (e.pageY - Number($('#can').css('top').replace('px', '')) - Number($('#can').css('height').replace('px', '')) > -20) {
-                    fakecontext.drawImage(canvas, 0, 0);
-                    $('#can').css('height', Number($('#can').css('height').replace('px', '')) + 20);
-                    canvas.height+=20;
-                    context.drawImage(fakecanvas, 0, 0);
-                    fakecanvas.height+=20;
+                    x();
                 }
                 if (e.pageX - Number($('#can').css('left').replace('px', '')) - Number($('#can').css('width').replace('px', '')) > -20) {
-                    fakecontext.drawImage(canvas, 0, 0);
-                    $('#can').css('width', Number($('#can').css('width').replace('px', '')) + 20);
-                    canvas.width+=20;
-                    context.drawImage(fakecanvas, 0, 0);
-                    fakecanvas.width+=20;
+                    y();
                 }
                 if (e.pageX - Number($('#can').css('left').replace('px', '')) < 20) {
                     fakecontext.drawImage(canvas, 0, 0);
                     $('#can').css('left', Number($('#can').css('left').replace('px', '')) - 20);
                     $('#can').css('width', Number($('#can').css('width').replace('px', '')) + 20);
-                    canvas.width+=20;
-                    context.translate(+20,+0);
+                    canvas.width += 20;
+                    context.translate(+20, +0);
                     context.drawImage(fakecanvas, 0, 0);
-                    fakecanvas.width+=20;
+                    fakecanvas.width += 20;
+                    y();
                 }
                 if (e.pageY - Number($('#can').css('top').replace('px', '')) < 20) {
                     fakecontext.drawImage(canvas, 0, 0);
                     $('#can').css('top', Number($('#can').css('top').replace('px', '')) - 20);
                     $('#can').css('height', Number($('#can').css('height').replace('px', '')) + 20);
-                    canvas.height+=20;
-                    context.translate(+0,+20);
+                    canvas.height += 20;
+                    context.translate(+0, +20);
                     context.drawImage(fakecanvas, 0, 0);
-                    fakecanvas.height+=20;
+                    fakecanvas.height += 20;
+                    x();
                 }
                 if (draw) {
-                    var h=e.pageX - Number($('#can').css('left').replace('px', ''));
-                    var w=e.pageY - Number($('#can').css('top').replace('px', ''));
-                    context.lineTo(h+1,w+1);
+                    $('#can').css('z-index', '10');
+                    var h = e.pageX - Number($('#can').css('left').replace('px', ''));
+                    var w = e.pageY - Number($('#can').css('top').replace('px', ''));
+                    context.lineWidth = 5;
+                    context.lineJoin = context.lineCap = 'round';
+                    context.shadowBlur = 5;
+                    context.shadowColor = color;
+                    context.lineTo(h + 1, w + 1);
+                    context.strokeStyle = color;
                     context.stroke();
                 }
             });
-            $('html').bind('keypress', function(e)
-            {
-                 if(e.keyCode == 13)
-                 {
-                     var dataURL = canvas.toDataURL();
-                     console.log(dataURL);
-                     $('textarea').sceditor('instance').insert('[img]'+dataURL+'[/img]');
-                     $('#can').css('display','none');
-                     $('iframe').contents().find('img').attr('src',$('iframe').contents().find('src').replaceAll(
-                             'http://localhost:63342/No_Name/static/'
-                     ));
-                 }
+            $('html').bind('keypress', function (e) {
+                if (e.keyCode == 13) {
+                    var dataURL = canvas.toDataURL();
+                    $('textarea').sceditor('instance').insert('[br][img]' + dataURL + '[/img]');
+                    start();
+                    $('iframe').contents().find('img').attr('src', $('iframe').contents().find('src').replaceAll(
+                            'http://localhost:63342/No_Name/static/'
+                    ));
+                }
+                else if (e.which == 49) {
+                    color = 'black';
+                }
+                else if (e.which == 50) {
+                    color = 'white'
+                }
+                else if (e.which == 51) {
+                    color = 'green'
+                }
+                else if (e.which == 52) {
+                    color = 'red'
+                }
+                else if (e.which == 53) {
+                    color = 'blue'
+                }
+                else {
+                    start();
+                }
+            });
+            $('iframe').contents().bind('keypress', function (e) {
+                if (e.keyCode != 1301023130) {
+                    start();
+                }
             });
         });
+        $('iframe').contents().bind("contextmenu", function (event) {
+
+    // Avoid the real one
+    event.preventDefault();
+
+    // Show contextmenu
+    $(".custom-menu").finish().toggle(100).
+
+    // In the right position (the mouse)
+    css({
+        top: event.pageY + "px",
+        left: event.pageX + "px"
+    });
+});
+        // If the document is clicked somewhere
+        $('iframe').contents().bind("mousedown", function (e) {
+
+            // If the clicked element is not the menu
+            if (!$(e.target).parents(".custom-menu").length > 0) {
+
+                // Hide it
+                $(".custom-menu").hide(100);
+            }
+        });
+        // If the menu element is clicked
+        $(".custom-menu li").click(function(){
+
+            // This is the triggered action name
+            switch($(this).attr("data-action")) {
+
+                // A case for each action. Your actions here
+                case "first": alert("first"); break;
+                case "second": alert("second"); break;
+                case "third": alert("third"); break;
+            }
+
+            // Hide it AFTER the action was triggered
+            $(".custom-menu").hide(100);
+          });
     </script>
     <style>
+        .custom-menu {
+            display: none;
+            z-index: 1000;
+            position: absolute;
+            overflow: hidden;
+            border: 1px solid #CCC;
+            white-space: nowrap;
+            font-family: sans-serif;
+            background: #FFF;
+            color: #333;
+            border-radius: 5px;
+            padding: 0;
+        }
+        .custom-menu li {
+            padding: 8px 12px;
+            cursor: pointer;
+            list-style-type: none;
+        }
+        .custom-menu li:hover {
+            background-color: #DEF;
+        }
         html, body {
             height: 100%;
             margin: 0;
         }
-
         #other_text {
             width: 100%;
             height: 100%;
             max-width: 100%;
             max-height: 100%;
         }
-
         .sceditor-group {
             margin: 0 !important;
             padding: 0 !important;
@@ -179,14 +294,12 @@
             background-color: white !important;
             border: 0 !important;
         }
-
         .sceditor-toolbar {
             text-align: center !important;
             line-height: normal !important;
             border-bottom: 0 !important;
             background: white !important;
         }
-
         #theme {
             width: 406px;
             height: 35px;
@@ -203,10 +316,16 @@
         }
     </style>
 </head>
+
 <body>
-<canvas id="fake"  style="display: none; position:absolute; z-index: 10; top:50px; width: 50px; height: 50px; max-width: 100%; max-height: 100%;"></canvas>
-<canvas id="can"
-        style="position:absolute;" width="50" height="50"></canvas>
+<canvas id="fake"
+        style="display: none; position:absolute; z-index: 10; top:50px; width: 50px; height: 50px; max-width: 100%; max-height: 100%;"></canvas>
+<canvas id="can" style="position:absolute;" width="100" height="100"></canvas>
 <textarea id="other_text"></textarea>
+<ul class='custom-menu'>
+  <li data-action="first">First thing</li>
+  <li data-action="second">Second thing</li>
+  <li data-action="third">Third thing</li>
+</ul>
 </body>
 </html>
